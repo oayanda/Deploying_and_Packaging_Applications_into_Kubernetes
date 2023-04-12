@@ -58,3 +58,5 @@ Login with the default authentication details username: *admin* password: *passw
 ### Deploying Ingress controller 
 
 An ingress is an API object that manages external access to the services in a kubernetes cluster. It is capable to provide load balancing, SSL termination and name-based virtual hosting.
+
+**Deploy Nginx Ingress Controller**
