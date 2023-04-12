@@ -76,5 +76,13 @@ helm upgrade --install ingress-nginx ingress-nginx \
   ```bash
   kubectl get pods --namespace=ingress-nginx
   ```
-  
+
 ![pods](/images/7.png)
+
+Verify ingress Load balance 
+
+![pods](/images/8.png)
+
+The ingress controller Load balancer is ready but nothing as been deployed to it yet.
+
+**Deploy Artifactory Ingress**
