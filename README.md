@@ -60,3 +60,21 @@ Login with the default authentication details username: *admin* password: *passw
 An ingress is an API object that manages external access to the services in a kubernetes cluster. It is capable to provide load balancing, SSL termination and name-based virtual hosting.
 
 **Deploy Nginx Ingress Controller**
+
+You view the offical documentation [here](https://kubernetes.github.io/ingress-nginx/deploy/)
+
+```bash
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+  ```
+
+![pods](/images/6.png)
+
+  Verify ingress-nginx namespace is created
+
+  ```bash
+  kubectl get pods --namespace=ingress-nginx
+  ```
+  
+![pods](/images/7.png)
