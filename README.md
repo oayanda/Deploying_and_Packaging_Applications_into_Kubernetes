@@ -134,3 +134,15 @@ Create a DNS hosted zone in AWS route53 for your domain, my case *oayanda.com* a
 
 Let's verify this in the browser
 ![pods](/images/11.png)
+
+Get the default login
+
+```bash
+helm test artifactory -n tools
+```
+![pods](/images/12.png) 
+
+Login and configure artifactory. Get a free trial licence [here](https://jfrog.com/start-free/)
+
+![pods](/images/13.png)
+
