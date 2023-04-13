@@ -86,3 +86,35 @@ Verify ingress Load balance
 The ingress controller Load balancer is ready but nothing as been deployed to it yet.
 
 **Deploy Artifactory Ingress**
+
+Now, it is time to configure the ingress so that we can route traffic to the Artifactory internal service, through the ingress controller’s load balancer.
+
+Create an ingress manifest file for Artifactory as shown below
+
+```bash
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: artifactory
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "tooling.artifactory.sandbox.svc.oayanda.com"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: artifactory
+            port:
+              number: 8082
+```
+
+```bash
+# Apply 
+k apply -f artifactory.yaml -n tools
+```
+
+Verify
+![pods](/images/9.png)
