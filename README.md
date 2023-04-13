@@ -99,7 +99,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "tooling.artifactory.sandbox.svc.oayanda.com"
+  - host: "tooling.artifactory.oayanda.com"
     http:
       paths:
       - path: /
@@ -114,7 +114,23 @@ spec:
 ```bash
 # Apply 
 k apply -f artifactory.yaml -n tools
+
+# Verify
+k get ingress -n tools
 ```
 
 Verify
 ![pods](/images/9.png)
+
+- CLASS – The nginx controller class name nginx
+- HOSTS – The hostname to be used in the browser tooling.artifactory.sandbox.svc.darey.io
+- ADDRESS – The loadbalancer address that was created by the ingress controller
+
+**Configure DNS**
+
+Create a DNS hosted zone in AWS route53 for your domain, my case *oayanda.com* and create a A record *tooling.artifactory* that points to the ingress load balancer
+
+![pods](/images/10.png)
+
+Let's verify this in the browser
+![pods](/images/11.png)
