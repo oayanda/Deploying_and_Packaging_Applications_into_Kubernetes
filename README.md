@@ -146,3 +146,87 @@ Login and configure artifactory. Get a free trial licence [here](https://jfrog.c
 
 ![pods](/images/13.png)
 
+Configure TLS/SSL
+
+Install cert manager to manager ssl certificate.
+
+Cert-manager is a Kubernetes addon to automate the management and issuance of TLS certificates from various issuing sources.
+
+```bash
+# install the cert-manager CustomResourceDefinition resources
+
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.1/cert-manager.crds.yaml
+```
+![pods](/images/15.png)
+
+ To install the chart with the release name my-release
+
+```bash
+## Add the Jetstack Helm repository
+$ helm repo add jetstack https://charts.jetstack.io
+
+## Install the cert-manager helm chart
+$ helm install my-release --namespace cert-manager --version v1.11.1 jetstack/cert-manager
+```
+
+![pods](/images/16.png)
+
+Certificate Issuer
+
+Next, is to create an Issuer. We will use a Cluster Issuer so that it can be scoped globally.
+
+```bash
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  namespace: "cert-manager"
+  name: "letsencrypt-prod"
+spec:
+  acme:
+    server: "https://acme-v02.api.letsencrypt.org/directory"
+    email: "infradev@oldcowboyshop.com"
+    privateKeySecretRef:
+      name: "letsencrypt-prod"
+    solvers:
+    - selector:
+        dnsZones:
+          - "oayanda.com"
+      dns01:
+        route53:
+          region: "us-east-1"   
+          hostedZoneID: "Z0700823YVKJ6JAO67K0"
+```
+Make sure to update the manifest file and apply.
+
+```bash
+k apply -f issuer.yaml
+```
+![pods](/images/17.png)
+
+To ensure that every created ingress also has TLS configured, we will need to update the ingress manifest with TLS specific configurations.
+
+```bash
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+  name: artifactory
+spec:
+  rules:
+  - host: "tooling.artifactory.oayanda.com"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: artifactory
+            port:
+              number: 8082
+  tls:
+  - hosts:
+    - "tooling.artifactory.oayanda.com"
+    secretName: "tooling.artifactory.oayanda.com"
+```
