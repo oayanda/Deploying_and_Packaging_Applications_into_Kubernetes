@@ -184,7 +184,7 @@ metadata:
 spec:
   acme:
     server: "https://acme-v02.api.letsencrypt.org/directory"
-    email: "infradev@oldcowboyshop.com"
+    email: "info@oayanda.com"
     privateKeySecretRef:
       name: "letsencrypt-prod"
     solvers:
@@ -230,3 +230,4 @@ spec:
     - "tooling.artifactory.oayanda.com"
     secretName: "tooling.artifactory.oayanda.com"
 ```
+![pods](/images/20.png)
