@@ -74,12 +74,12 @@ helm upgrade --install ingress-nginx ingress-nginx \
   Verify ingress-nginx namespace is created
 
   ```bash
-  kubectl get pods --namespace=ingress-nginx
+  k get po,svc --namespace=ingress-nginx
   ```
 
 ![pods](/images/7.png)
 
-Verify ingress Load balance 
+Verify ingress Load balancer 
 
 ![pods](/images/8.png)
 
@@ -166,7 +166,7 @@ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/
 $ helm repo add jetstack https://charts.jetstack.io
 
 ## Install the cert-manager helm chart
-$ helm install my-release --namespace cert-manager --version v1.11.1 jetstack/cert-manager
+$ helm install my-release --namespace cert-manager --version v1.11.1 jetstack/cert-manager --create-namespace
 ```
 
 ![pods](/images/16.png)
@@ -190,16 +190,22 @@ spec:
     solvers:
     - selector:
         dnsZones:
-          - "oayanda.com"
+          - "tooling.artifactory.oayanda.com"
+
       dns01:
         route53:
-          region: "us-east-1"   
-          hostedZoneID: "Z0700823YVKJ6JAO67K0"
+          region: "us-east-1"
+          role: "arn:aws:iam::737237029972:role/dns-manager"
+          hostedZoneID: <"Enter-Your-HostedZone-Here">
+          accessKeyID: <Enter-your-access-key-here>
+          secretAccessKeySecretRef:
+            name: aws-secret
+            key: secret-access-key
 ```
 Make sure to update the manifest file and apply.
 
 ```bash
-k apply -f issuer.yaml
+k apply -f cluster-issuer.yaml
 ```
 ![pods](/images/17.png)
 
