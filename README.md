@@ -195,14 +195,16 @@ spec:
       dns01:
         route53:
           region: "us-east-1"
-          role: "arn:aws:iam::737237029972:role/dns-manager"
+          role: "arn:aws:iam::xxxxxxxx:role/dns-manager"
           hostedZoneID: <"Enter-Your-HostedZone-Here">
           accessKeyID: <Enter-your-access-key-here>
           secretAccessKeySecretRef:
             name: aws-secret
             key: secret-access-key
 ```
-Make sure to update the manifest file and apply.
+
+Make sure to update the role, region, aws credentials in manifest file and apply.
+> Note you would also need to create and deploy a secret yaml file for hide your credentials
 
 ```bash
 k apply -f cluster-issuer.yaml
@@ -236,4 +238,12 @@ spec:
     - "tooling.artifactory.oayanda.com"
     secretName: "tooling.artifactory.oayanda.com"
 ```
+Check if the certificate request has been granted
+
+```bash
+k get certificate -n tools
+```
+![pods](/images/18.png)
+
+Let's verify this in the browser
 ![pods](/images/20.png)
