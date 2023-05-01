@@ -28,7 +28,7 @@ helm repo update
 Install artifactory chart
 
 ```bash
-helm upgrade --install artifactory jfrog/artifactory --version 107.38.10 -n tools
+helm upgrade --install artifactory  jfrog/artifactory --version 107.38.10 -n tools
 ```
 
 ![pods](/images/2.png)
@@ -195,9 +195,9 @@ spec:
       dns01:
         route53:
           region: "us-east-1"
-          role: "arn:aws:iam::xxxxxxxx:role/dns-manager"
-          hostedZoneID: <"Enter-Your-HostedZone-Here">
-          accessKeyID: <Enter-your-access-key-here>
+          role: "arn:aws:iam::737237029972:role/dns-manager"
+          hostedZoneID: "<hostedZoneID>"
+          accessKeyID: "<accessKeyID>"
           secretAccessKeySecretRef:
             name: aws-secret
             key: secret-access-key
@@ -210,6 +210,18 @@ Make sure to update the role, region, aws credentials in manifest file and apply
 k apply -f cluster-issuer.yaml
 ```
 ![pods](/images/17.png)
+
+```bash
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aws-secret
+type: Opaque
+stringData:
+  access-key-id: <access-key-id>
+  secret-access-key: <secret-access-key>
+
+```
 
 To ensure that every created ingress also has TLS configured, we will need to update the ingress manifest with TLS specific configurations.
 
@@ -236,7 +248,7 @@ spec:
   tls:
   - hosts:
     - "tooling.artifactory.oayanda.com"
-    secretName: "tooling.artifactory.oayanda.com"
+    secretName: "artifactory-tls"
 ```
 Check if the certificate request has been granted
 
@@ -247,3 +259,18 @@ k get certificate -n tools
 
 Let's verify this in the browser
 ![pods](/images/20.png)
+
+Finally, now artifactory is using ingress service over ssl instead of the Load balancer, hence this means that Load balancer is redundant. To save cost we need to change the service from load balancer to  ClusterIP.
+
+Depending on your use case, it is better to install artifactory with the values file updated at the beginning of installation. This is because the chart comes with postgres database bundled with it.
+
+
+
+Copy the values file from the artifactory chart and change Loadbalancer to ClusterIP
+
+```bash
+# copy chart values to a yaml file
+helm show values  jfrog/artifactory > values.yaml
+```
+
+![values file](./images/22.png)
